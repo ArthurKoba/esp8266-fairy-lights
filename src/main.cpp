@@ -1,9 +1,11 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "configs.h"
+#include "core.h"
 
 const char ssid[]  = "";
 const char pass[] = "";
+Core core;
 
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
@@ -13,12 +15,6 @@ void setup() {
 }
 
 void loop() {
-    if (WiFi.status() != WL_CONNECTED) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(100);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(500);
-    }
-    digitalWrite(LED_BUILTIN, LOW);
-
+    if (WiFi.status() == WL_CONNECTED);
+    else core.blink();
 }
