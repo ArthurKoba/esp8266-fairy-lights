@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
+#include "web_server_files/files.h"
 
 enum WebServerFile {INDEX, STYLES, APP_JS, NOT_FOUND_HTML};
 
@@ -19,6 +20,9 @@ public:
     void init(uint32_t (*data_handler)(const String &)) {
         handler = data_handler;
         srv.onNotFound([this] {fileHandler(WebServerFile::NOT_FOUND_HTML);});
+        srv.on("/", HTTP_GET, [this] { fileHandler(WebServerFile::INDEX); });
+        srv.on("/styles.css", HTTP_GET, [this] { fileHandler(WebServerFile::STYLES); });
+        srv.on("/app.js", HTTP_GET, [this] { fileHandler(WebServerFile::APP_JS); });
         srv.on("/update", HTTP_POST, [this] {update_handler();});
         srv.begin(80);
     }
@@ -28,7 +32,12 @@ public:
 
 protected:
     void fileHandler(WebServerFile file) {
-        srv.send(200, SCRIPT_TYPE, PSTR("test"));
+        switch (file) {
+            case INDEX: return srv.send(200, HTML_TYPE, index_html);
+            case NOT_FOUND_HTML: return srv.send(200, HTML_TYPE, not_found_html);
+            case STYLES: return srv.send(200, CSS_TYPE, styles_css);
+            case APP_JS: return srv.send(200, SCRIPT_TYPE, app_js);
+        }
     }
 
     void update_handler() {
