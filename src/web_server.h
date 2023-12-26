@@ -14,6 +14,7 @@ const char* HTML_TYPE     PROGMEM = "text/html";
 const char* CSS_TYPE      PROGMEM = "text/css";
 const char* SCRIPT_TYPE   PROGMEM = "application/javascript";
 const char* PLAIN_TYPE    PROGMEM = "text/plain";
+const char* OCTET_TYPE    PROGMEM = "application/octet-stream";
 const char* PLAIN         PROGMEM = "plain";
 
 typedef AsyncWebServerRequest Req;
@@ -25,16 +26,10 @@ public:
 
     void init(DataHandler data_handler) {
         handler = data_handler;
-        srv.on("/update", HTTP_POST, nullptr, nullptr,
+        srv.on("/update", HTTP_POST,
+               [this] (Req *r) {r->send(200, PLAIN_TYPE, "OK");},
+               nullptr,
                [this] (Req *r, const uint8_t *data, size_t len, size_t index, size_t total) {
-            Serial.print("len: ");
-            Serial.println(len);
-            Serial.print("Total: ")`;
-            Serial.println(total);
-            Serial.print("Index: ");
-            Serial.println(index);
-            Serial.print("Total: ");
-            Serial.println(total);
             update_handler(data, len);
         });
         srv.on("/", HTTP_GET, [this] (Req *r) {page_handler(r, WebServerFile::INDEX);});
@@ -49,7 +44,13 @@ protected:
 //        if (handler == nullptr) return srv.send(500, PLAIN_TYPE, PSTR("Server data handler error"));
 //        else if (!srv.hasArg(PLAIN)) return srv.send(500, PLAIN_TYPE, PSTR("Body not received"));
 //        else if (srv.arg(PLAIN).length() != 3) return srv.send(500, PLAIN_TYPE, PSTR("Error parse: body len not is equals 3"));
-
+        Serial.print("Start data: ");
+        for (size_t i = 0; i < len - 1; ++i) {
+            Serial.print(data[i]);
+            Serial.print(", ");
+        }
+        Serial.print(data[len-1]);
+        Serial.println(". End.");
     }
 
     static void page_handler(Req *r, WebServerFile file) {
