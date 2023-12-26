@@ -3,7 +3,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 <html lang="ru">
   <head>
     <meta charset="utf-8">
-    <title>Заголовок страницы</title>
+    <title>ESP8266 Fairy Lights</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
@@ -17,21 +17,33 @@ const char index_html[] PROGMEM = R"rawliteral(
       </nav>
     </header>
     <main>
-      <article>
-        <section>
-          <h2>Первая секция</h2>
-          <p>Она обо мне</p>
-          <p>Но может быть и о семантике, я пока не решил.</p>
-        </section>
-        <section>
-          <h2>Вторая секция</h2>
-          <button id="test" type="button">test click</button>
-        </section>
-        <section>
-          <h2>И третья</h2>
-          <p>Вы уже должны были начать догадываться.</p>
-        </section>
-      </article>
+      <section id="one">
+        <h1>Light One - Channels</h1>
+        <div>
+          <input type="range" class="channel" name="1" min="0" max="255" value="0" step="1" />
+          <label for="cowbell">Red</label>
+        </div>
+        <div>
+          <input type="range" class="channel" name="2" min="0" max="255" value="0" step="1" />
+          <label for="cowbell">Yellow</label>
+        </div>
+        <div>
+          <input type="range" class="channel" name="3" min="0" max="255" value="0" step="1" />
+          <label for="cowbell">Blue-Green</label>
+        </div>
+      </section>
+      <section id="two">
+        <h1>Light Two - Channels</h1>
+        <div>
+        <div>
+          <input type="range" class="channel" name="4" min="0" max="255" value="0" step="1" />
+          <label for="cowbell">Red-Yellow</label>
+        </div>
+        <div>
+          <input type="range" class="channel" name="5" min="0" max="255" value="0" step="1" />
+          <label for="cowbell">Blue-Green</label>
+        </div>
+      </section>
     </main>
     <footer>
       <p>Сюда бы я вписал информацию об авторе и ссылки на другие сайты</p>
