@@ -31,7 +31,7 @@ struct Packet {
 class Core {
 public:
     Core() {
-        pinMode(LED_BUILTIN, OUTPUT);
+        pinMode(LED_PIN, OUTPUT);
     }
 
     uint32_t data_handler(const String &data) {
@@ -51,7 +51,7 @@ public:
     void blink() {
         if (millis() - last_blink < BLINK_DELAY_MS) return;
         last_blink = millis();
-        states.led ? digitalWrite(LED_BUILTIN, HIGH) : digitalWrite(LED_BUILTIN, LOW);
+        states.led ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
         states.led = !states.led;
     }
 
