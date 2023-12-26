@@ -39,18 +39,17 @@ public:
         pinMode(LED_PIN, OUTPUT);
     }
 
-    uint32_t data_handler(const String &data) {
-        if (data.length() != 4) return 0x4C45433F;
-        Packet packet = *(Packet*)&data;
-        Serial.print("\nLenght arg: ");
-        Serial.println(data.length());
-        Serial.print("packet_id : ");
-        Serial.println(packet.packet_id);
-        Serial.print("data_id: ");
-        Serial.println(packet.data_id);
-        Serial.print("data_value: ");
-        Serial.println(packet.data_value);
-        return 0x4F4B0000;
+    void data_handler(const uint8_t *data, size_t len) {
+//        if (data.length() != 4) return 0x4C45433F;
+//        Packet packet = *(Packet*)&data;
+//        Serial.print("\nLenght arg: ");
+//        Serial.println(data.length());
+//        Serial.print("packet_id : ");
+//        Serial.println(packet.packet_id);
+//        Serial.print("data_id: ");
+//        Serial.println(packet.data_id);
+//        Serial.print("data_value: ");
+//        Serial.println(packet.data_value);
     }
 
     void blink() {

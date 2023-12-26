@@ -9,14 +9,13 @@ const char pass[] = "";
 Core core;
 WebServer server;
 
-uint32_t mediator(const String &data) { return core.data_handler(data);}
 
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
     pinMode(LED_BUILTIN, OUTPUT);
     WiFi.begin(ssid, pass);
-    server.init(mediator);
+    server.init([] (const uint8_t *d, size_t s) {core.data_handler(d, s);});
 }
 
 void loop() {
