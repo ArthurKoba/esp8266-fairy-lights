@@ -20,6 +20,6 @@ void setup() {
 }
 
 void loop() {
-    if (WiFi.status() == WL_CONNECTED) server.tick();
+    if (WiFi.status() != WL_CONNECTED) core.fast_blink();
     else core.blink();
 }
