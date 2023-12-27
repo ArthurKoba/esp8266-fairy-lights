@@ -2,7 +2,6 @@
 #define ESP8266_FAIRY_LIGHTS_WEB_SERVER_H
 
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
