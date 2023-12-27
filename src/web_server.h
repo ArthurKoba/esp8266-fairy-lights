@@ -24,6 +24,11 @@ public:
     WebServer() = default;
 
     void init(DataHandler data_handler) {
+#ifdef USE_CORS
+#warning CORS ENABLED!
+        DefaultHeaders::Instance().addHeader(F("Access-Control-Allow-Origin"), F("*"));
+        DefaultHeaders::Instance().addHeader(F("Access-Control-Allow-Headers"), F("content-type"));
+#endif
         handler = data_handler;
         srv.on("/update", HTTP_POST,
                [this] (Req *r) {},
@@ -35,6 +40,7 @@ public:
         srv.on("/styles.css", HTTP_GET, [this] (Req *r) {page_handler(r, WebServerFile::STYLES);});
         srv.on("/app.js", HTTP_GET, [this] (Req *r) {page_handler(r, WebServerFile::APP_JS);});
         srv.onNotFound( [this] (Req *r) {page_handler(r, WebServerFile::NOT_FOUND_HTML);});
+
         srv.begin();
     }
 
