@@ -15,10 +15,9 @@ const char* CSS_TYPE      PROGMEM = "text/css";
 const char* SCRIPT_TYPE   PROGMEM = "application/javascript";
 const char* PLAIN_TYPE    PROGMEM = "text/plain";
 const char* OCTET_TYPE    PROGMEM = "application/octet-stream";
-const char* PLAIN         PROGMEM = "plain";
 
 typedef AsyncWebServerRequest Req;
-typedef void (*DataHandler)(const uint8_t *, size_t);
+typedef DataProcessingStatus (*DataHandler)(const uint8_t *, size_t);
 
 class WebServer {
 public:
@@ -27,10 +26,10 @@ public:
     void init(DataHandler data_handler) {
         handler = data_handler;
         srv.on("/update", HTTP_POST,
-               [this] (Req *r) {r->send(200, PLAIN_TYPE, "OK");},
+               [this] (Req *r) {},
                nullptr,
                [this] (Req *r, const uint8_t *data, size_t len, size_t index, size_t total) {
-            update_handler(data, len);
+            req_data_handler(r, data, len);
         });
         srv.on("/", HTTP_GET, [this] (Req *r) {page_handler(r, WebServerFile::INDEX);});
         srv.on("/styles.css", HTTP_GET, [this] (Req *r) {page_handler(r, WebServerFile::STYLES);});
@@ -40,17 +39,19 @@ public:
     }
 
 protected:
-    void update_handler(const uint8_t *data, size_t len) {
-//        if (handler == nullptr) return srv.send(500, PLAIN_TYPE, PSTR("Server data handler error"));
-//        else if (!srv.hasArg(PLAIN)) return srv.send(500, PLAIN_TYPE, PSTR("Body not received"));
-//        else if (srv.arg(PLAIN).length() != 3) return srv.send(500, PLAIN_TYPE, PSTR("Error parse: body len not is equals 3"));
-        Serial.print("Start data: ");
-        for (size_t i = 0; i < len - 1; ++i) {
-            Serial.print(data[i]);
-            Serial.print(", ");
+    void req_data_handler(Req *r, const uint8_t *data, size_t len) {
+
+        DataProcessingStatus status = handler(data, len);
+        Serial.print("Status handler: ");
+        Serial.println(status);
+        switch (status) {
+            case SUCCESS: r->send_P(200, PLAIN_TYPE, PSTR("OK")); break;
+            case SYSTEM_ERROR: r->send_P(500, PLAIN_TYPE, PSTR("System Firmware error.")); break;
+            case CH_NOT_INITED: r->send_P(406, PLAIN_TYPE, PSTR("Channel not inited")); break;
+            case CH_OUTSIDE: r->send_P(406, PLAIN_TYPE, PSTR("Channel beyond initialization")); break;
+            case UNKNOWN_PACKET: r->send_P(406, PLAIN_TYPE, PSTR("Packet Unknown")); break;
+            case PACKET_LENGTH_ERROR: r->send_P(406, PLAIN_TYPE, PSTR("Packet length error")); break;
         }
-        Serial.print(data[len-1]);
-        Serial.println(". End.");
     }
 
     static void page_handler(Req *r, WebServerFile file) {

@@ -35,8 +35,13 @@
     #error CH5_PIN not defined
 #endif
 
-enum Channels {
-    ONE = CH1_PIN, TWO = CH2_PIN, THREE = CH3_PIN, FOUR = CH4_PIN, FIVE = CH5_PIN
+enum DataProcessingStatus : uint8_t {
+    SUCCESS = 0,
+    SYSTEM_ERROR,
+    UNKNOWN_PACKET,
+    PACKET_LENGTH_ERROR,
+    CH_NOT_INITED, // channel is not initialized
+    CH_OUTSIDE, // channel beyond available
 };
 
 struct States {
