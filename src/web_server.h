@@ -5,6 +5,7 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
+#include "core_types.h"
 #include "web_server_types.h"
 #include "web_server_files/files.h"
 
