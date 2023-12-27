@@ -20,7 +20,7 @@ public:
 #endif
         c = core;
         srv.on("/updateChannel", HTTP_POST,
-               [this] (Req *r) {},
+               [] (Req *r) {},
                nullptr,
                [this] (Req *r, const uint8_t *data, size_t len, size_t index, size_t total) {
             update_channel_handler(r, data, len);
@@ -38,7 +38,7 @@ protected:
         if (sizeof(UpdateChannelPacket) != len) {
             return r->send_P(406, PLAIN_TYPE, PSTR("Packet length error"));
         }
-        UpdateChannelPacket packet = *(UpdateChannelPacket*)&*(data+1);
+        UpdateChannelPacket packet = *(UpdateChannelPacket*)data;
         write_channel_status_t status = c->write_channel(packet.channel, packet.bright);
         switch (status) {
             case CHANNEL_WRITE_OK: r->send_P(200, PLAIN_TYPE, PSTR("OK")); break;
@@ -51,7 +51,7 @@ protected:
     static void page_handler(Req *r, web_server_file_t file) {
         switch (file) {
             case INDEX: return r->send_P(200, HTML_TYPE, index_html);
-            case NOT_FOUND_HTML: return r->send_P(200, HTML_TYPE, not_found_html);
+            case NOT_FOUND_HTML: return r->send_P(404, HTML_TYPE, not_found_html);
             case STYLES: return r->send_P(200, CSS_TYPE, styles_css);
             case APP_JS: return r->send_P(200, SCRIPT_TYPE, app_js);
         }
