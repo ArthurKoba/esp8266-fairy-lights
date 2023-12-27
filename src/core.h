@@ -105,6 +105,14 @@ public:
         }
     }
 
+    void write_channels_bright_to_buffer(uint8_t *buffer) {
+        for (int i = 0; i < channels_length; ++i) {buffer[i] = channels[i].bright; }
+    }
+
+    [[nodiscard]] uint8_t get_len_channels() const {
+        return channels_length;
+    }
+
 private:
     Channel *channels = nullptr;
     uint8_t channels_length = 0;

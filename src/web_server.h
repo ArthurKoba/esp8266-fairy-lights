@@ -25,6 +25,7 @@ public:
                [this] (Req *r, const uint8_t *data, size_t len, size_t index, size_t total) {
             update_channel_handler(r, data, len);
         });
+        srv.on("/getChannelsBright", HTTP_GET, [this] (Req *r) { get_channels(r);});
         srv.on("/", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::INDEX);});
         srv.on("/styles.css", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::STYLES);});
         srv.on("/app.js", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::APP_JS);});
@@ -34,6 +35,13 @@ public:
     }
 
 protected:
+    void get_channels(Req *r) {
+        auto *brights = new uint8_t[c->get_len_channels()];
+        c->write_channels_bright_to_buffer(brights);
+        r->send_P(200, OCTET_TYPE, brights, c->get_len_channels());
+        delete[] brights;
+    }
+
     void update_channel_handler(Req *r, const uint8_t *data, size_t len) {
         if (sizeof(UpdateChannelPacket) != len) {
             return r->send_P(406, PLAIN_TYPE, PSTR("Packet length error"));

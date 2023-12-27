@@ -7,7 +7,14 @@ class API {
         this.url = new URL(url)
     }
 
-    async writeChannel(channel = 1, value = 0) {
+    async writeBrightToChannelDelay(channel = 1, value = 0) {
+        let lastChange = this.$channelsDelays[channel] ? this.$channelsDelays[channel] : 0
+        if (Date.now() - lastChange < CHANGE_INPUT_DELAY_MS) return;
+        this.$channelsDelays[channel] = Date.now()
+        return this.writeBrightToChannel(channel, value)
+    }
+
+    async writeBrightToChannel(channel = 1, value = 0) {
         let buffer = new ArrayBuffer(2)
         let view = new Uint8Array(buffer)
         view.set([channel, value])
@@ -19,31 +26,44 @@ class API {
         if (response.status) this.$channelsDelays[channel] = Date.now()
     }
 
-    async writeChannelDelay(channel = 1, value = 0) {
-        let lastChange = this.$channelsDelays[channel] ? this.$channelsDelays[channel] : 0
-        if (Date.now() - lastChange < CHANGE_INPUT_DELAY_MS) return;
-        this.$channelsDelays[channel] = Date.now()
-        return this.writeChannel(channel, value)
+    async getBrightChannels() {
+        const response = await fetch(this.url + "getChannelsBright", {
+            method: "GET", "mode": "cors", cache: "no-cache",
+            credentials: "same-origin", referrerPolicy: "no-referrer", headers: {}
+        });
+        if (response.status !== 200) return console.error(response)
+        let buffer = await response.arrayBuffer()
+        return new Uint8Array(buffer)
     }
 }
 
 class ESPApp {
     $api = new API()
+    $inputChannelsNodes = document.querySelectorAll("input.channel")
     constructor() {
         if (document.URL === "http://127.0.0.1:3000/") {
             document.title = "TEST FAIRY LIGHT"
             this.$api = new API("http://192.168.1.5/")
         }
-        document.querySelectorAll("input.channel").forEach((node) => {
-            node.addEventListener("change", (e) => this.$api.writeChannelDelay(e.target.name, e.target.value))
+        this.$inputChannelsNodes.forEach((node) => {node.addEventListener("change", (e) =>
+            this.$api.writeBrightToChannelDelay(e.target.name, e.target.value))
         })
-        document.querySelectorAll("input.channel").forEach((node) => {
-            node.addEventListener("input", (e) => this.$api.writeChannelDelay(e.target.name, e.target.value))
+        this.$inputChannelsNodes.forEach((node) => {node.addEventListener("input", (e) =>
+            this.$api.writeBrightToChannelDelay(e.target.name, e.target.value))
         })
 
     }
 
-    async start() {}
+    async updateBrights() {
+        let brights = await this.$api.getBrightChannels()
+        if (brights.length !== this.$inputChannelsNodes.length)
+            return console.error("server channels length not equals client")
+        this.$inputChannelsNodes.forEach((node, key) => node.value = brights[key])
+    }
+
+    async start() {
+        await this.updateBrights()
+    }
 }
 
 app = new ESPApp()
