@@ -12,8 +12,9 @@ class API {
         let view = new Uint8Array(buffer)
         view.set([channel, value])
         const response = await fetch(this.url + "updateChannel", {
-            method: "POST", mode: "cors", cache: "no-cache", credentials: "same-origin", referrerPolicy: "no-referrer",
-            headers: {"Content-Type": "application/octet-stream"}, body: buffer,
+            method: "POST", mode: "cors", cache: "no-cache",
+            credentials: "same-origin", referrerPolicy: "no-referrer",
+            headers: {}, body: buffer,
         });
         if (response.status) this.$channelsDelays[channel] = Date.now()
     }
@@ -34,7 +35,7 @@ class ESPApp {
             this.$api = new API("http://192.168.1.5/")
         }
         document.querySelectorAll("input.channel").forEach((node) => {
-            node.addEventListener("change", (e) => this.$api.writeChannel(e.target.name, e.target.value))
+            node.addEventListener("change", (e) => this.$api.writeChannelDelay(e.target.name, e.target.value))
         })
         document.querySelectorAll("input.channel").forEach((node) => {
             node.addEventListener("input", (e) => this.$api.writeChannelDelay(e.target.name, e.target.value))
@@ -42,9 +43,7 @@ class ESPApp {
 
     }
 
-    async start() {
-
-    }
+    async start() {}
 }
 
 app = new ESPApp()
