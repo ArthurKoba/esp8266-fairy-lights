@@ -9,24 +9,26 @@ const char ssid[]  = "";
 const char pass[] = "";
 WebServer server;
 Core core;
-Channel channels[5];
 
+Channel channels[5] = {
+        {.pin = 5},
+        {.pin = 4},
+        {.pin = 14},
+        {.pin = 12},
+        {.pin = 13},
+};
+
+LightSource sources[2] = {
+        {&channels[0], &channels[1], nullptr},
+        {&channels[2], &channels[3], &channels[4]}
+};
 
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
 
-    channels[0].pin = 5;
-    channels[1].pin = 4;
-    channels[2].pin = 14;
-    channels[3].pin = 12;
-    channels[4].pin = 13;
-
-    channels[0].bright = 255;
-    channels[1].bright = 255;
-
-
     core.init_channels(channels, 5);
+    core.init_led_source(sources, 2);
     pinMode(LED_PIN, OUTPUT);
 
 

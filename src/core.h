@@ -21,12 +21,17 @@
 #include "web_server_types.h"
 
 typedef enum {INIT_CHANNEL_OK = 0, INIT_CHANNEL_ERROR_LENGTH = 1} init_channel_status_t;
+typedef enum {INIT_SOURCES_OK = 0, INIT_SOURCES_ERROR_LENGTH = 1} init_sources_status_t;
 typedef enum {
     CHANNEL_WRITE_OK = 0,
     CHANNEL_OUTSIDE,
     CHANNEL_NOT_INITED,
     NOT_INITED_CHANNELS //
 } write_channel_status_t;
+
+enum ColorMode {
+    OFF_MODE = 0,
+};
 
 struct States {
     bool led : 1;
@@ -44,6 +49,14 @@ struct Channel {
     uint8_t bright = 0;
     bool is_not_inited = true;
     bool is_need_update = false;
+};
+
+struct LightSource {
+    Channel *ch1 = nullptr;
+    Channel *ch2 = nullptr;
+    Channel *ch3 = nullptr;
+    uint8_t state = 0;
+    ColorMode mode = OFF_MODE;
 };
 
 class Core {
@@ -72,6 +85,12 @@ public:
             write_bright_CRT(channels[i]);
         }
         return init_channel_status_t::INIT_CHANNEL_OK;
+    }
+
+    init_sources_status_t init_led_source(LightSource *sources_ptr, uint8_t len) {
+        if (len < 1) return init_sources_status_t::INIT_SOURCES_ERROR_LENGTH;
+        sources = sources_ptr;
+        return init_sources_status_t::INIT_SOURCES_OK;
     }
 
     static void write_bright_CRT(Channel &channel) {
@@ -114,8 +133,10 @@ public:
     }
 
 private:
+    LightSource *sources = nullptr;
     Channel *channels = nullptr;
     uint8_t channels_length = 0;
+    uint8_t sources_length = 0;
     States states{};
     uint32_t last_blink = 0;
     uint32_t last_fast_blink = 0;
