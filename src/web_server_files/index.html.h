@@ -20,15 +20,15 @@ const char index_html[] PROGMEM = R"rawliteral(
       <section id="one">
         <h1>Light One - Channels</h1>
         <div>
-          <input type="range" class="channel" name="1" min="0" max="255" value="0" step="1" />
+          <input type="range" class="channel" name="0" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Red</label>
         </div>
         <div>
-          <input type="range" class="channel" name="2" min="0" max="255" value="0" step="1" />
+          <input type="range" class="channel" name="1" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Yellow</label>
         </div>
         <div>
-          <input type="range" class="channel" name="3" min="0" max="255" value="0" step="1" />
+          <input type="range" class="channel" name="2" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Blue-Green</label>
         </div>
       </section>
@@ -36,11 +36,11 @@ const char index_html[] PROGMEM = R"rawliteral(
         <h1>Light Two - Channels</h1>
         <div>
         <div>
-          <input type="range" class="channel" name="4" min="0" max="255" value="0" step="1" />
+          <input type="range" class="channel" name="3" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Red-Yellow</label>
         </div>
         <div>
-          <input type="range" class="channel" name="5" min="0" max="255" value="0" step="1" />
+          <input type="range" class="channel" name="4" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Blue-Green</label>
         </div>
       </section>
