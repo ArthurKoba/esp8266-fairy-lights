@@ -15,25 +15,11 @@
     #define FAST_BLINK_DELAY_MS 2000
 #endif
 
-#ifndef CH1_PIN
-    #error CH1_PIN not defined
+#ifndef UPDATE_DELAY
+    #define UPDATE_DELAY 5
 #endif
 
-#ifndef CH2_PIN
-    #error CH2_PIN not defined
-#endif
-
-#ifndef CH3_PIN
-    #error CH3_PIN not defined
-#endif
-
-#ifndef CH4_PIN
-    #error CH4_PIN not defined
-#endif
-
-#ifndef CH5_PIN
-    #error CH5_PIN not defined
-#endif
+enum InitChannelsStatus : uint8_t {INIT_OK = 0, ERROR_LENGTH = 1};
 
 enum DataProcessingStatus : uint8_t {
     SUCCESS = 0,
@@ -55,30 +41,63 @@ struct States {
     bool flag7 : 1;
 };
 
-struct UpdatePacket {
+struct Channel {
+    int8_t pin = -1;
+    uint8_t bright = 0;
+    bool is_not_inited = true;
+    bool is_need_update = false;
+};
+
+struct __attribute__((__packed__)) UpdateChannelPacket {
     uint8_t channel;
     uint8_t bright;
 };
 
 class Core {
 public:
-    Core() {
-        pinMode(LED_PIN, OUTPUT);
-        pinMode(CH1_PIN, OUTPUT);
-        pinMode(CH2_PIN, OUTPUT);
-        pinMode(CH3_PIN, OUTPUT);
-        pinMode(CH4_PIN, OUTPUT);
-        pinMode(CH5_PIN, OUTPUT);
+    Core() = default;
+
+    DataProcessingStatus data_handler(const uint8_t *data, size_t len) {
+        uint8_t packed_id = data[0];
+        switch (packed_id) {
+            case 50:
+                if (sizeof(UpdateChannelPacket) != len -1) return PACKET_LENGTH_ERROR;
+                UpdateChannelPacket packet = *(UpdateChannelPacket*)&*(data+1);
+                return write_channel(packet.channel, packet.bright);
+                break;
+        }
+        return UNKNOWN_PACKET;
     }
 
-    void data_handler(const uint8_t *data, size_t len) {
-        uint8_t payload_ptr = *(data + 1);
-        if (data[0] == 50) {
-            UpdatePacket packet = *(UpdatePacket*)&payload_ptr;
-            switch (packet.channel)  {
-                case 1: case 2: case 3: case 4: case 5: write_bright(packet.channel, packet.bright); break;
-            }
+    DataProcessingStatus write_channel(uint8_t channel, uint8_t val) {
+        if (channel > channels_length) return CH_OUTSIDE;
+        if (channels == nullptr) return SYSTEM_ERROR;
+        Channel &ch = channels[channel];
+        if (ch.is_not_inited) return CH_NOT_INITED;
+        ch.bright = val;
+//        write_bright_CRT(ch);
+        ch.is_need_update = true;
+        return SUCCESS;
+    }
+
+    InitChannelsStatus init_channels(Channel *channels_ptr, uint8_t len) {
+        if (len < 1) return InitChannelsStatus::ERROR_LENGTH;
+        channels = channels_ptr;
+        channels_length = len;
+        for (int i = 0; i < len; ++i) {
+            if (channels[i].pin < 0) continue;
+            pinMode(channels[i].pin, OUTPUT);
+            channels[i].is_not_inited = false;
+            write_bright_CRT(channels[i]);
         }
+        return InitChannelsStatus::INIT_OK;
+    }
+
+    static void write_bright_CRT(Channel &channel) {
+        uint8_t val = channel.bright;
+        val = ((long)val * val + 255) >> 8;
+        analogWrite(channel.pin, val);
+        channel.is_need_update = false;
     }
 
     void blink() {
@@ -94,16 +113,24 @@ public:
         states.led = !states.led;
     }
 
-private:
-    static void write_bright(uint8_t pin, uint8_t value) {
-        float val = value;
-        val = (float)((val > 23) ? (0.00512 * val * val - 0.325 * val + 5.73) : 0);
-        analogWrite(pin, (uint8_t)val);
+    void update() {
+        if (millis() - last_update < UPDATE_DELAY) return;
+        last_update = millis();
+        for (int i = 0; i < channels_length; ++i) {
+            Channel &ch = channels[i];
+            if (!ch.is_need_update) continue;
+            Serial.println(ch.is_need_update);
+            write_bright_CRT(ch);
+        }
     }
 
+private:
+    Channel *channels = nullptr;
+    uint8_t channels_length = 0;
+    States states{};
     uint32_t last_blink = 0;
     uint32_t last_fast_blink = 0;
-    States states{};
+    uint32_t last_update = 0;
 };
 
 #endif //ESP8266_FAIRY_LIGHTS_CORE_H
