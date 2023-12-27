@@ -31,7 +31,7 @@ void setup() {
 
 
     WiFi.begin(ssid, pass);
-    server.init([] (const uint8_t *d, size_t s) {return core.data_handler(d, s);});
+    server.init(&core);
 }
 
 void loop() {

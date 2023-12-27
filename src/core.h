@@ -1,34 +1,32 @@
 #ifndef ESP8266_FAIRY_LIGHTS_CORE_H
 #define ESP8266_FAIRY_LIGHTS_CORE_H
 
-#include <Arduino.h>
-
 #ifndef LED_PIN
-    #define LED_PIN LED_BUILTIN
+#define LED_PIN LED_BUILTIN
 #endif
 
 #ifndef BLINK_DELAY_MS
-    #define BLINK_DELAY_MS 2000
+#define BLINK_DELAY_MS 2000
 #endif
 
 #ifndef FAST_BLINK_DELAY_MS
-    #define FAST_BLINK_DELAY_MS 2000
+#define FAST_BLINK_DELAY_MS 2000
 #endif
 
 #ifndef UPDATE_DELAY
-    #define UPDATE_DELAY 5
+#define UPDATE_DELAY 5
 #endif
 
-enum InitChannelsStatus : uint8_t {INIT_OK = 0, ERROR_LENGTH = 1};
+#include <Arduino.h>
+#include "web_server_types.h"
 
-enum DataProcessingStatus : uint8_t {
-    SUCCESS = 0,
-    SYSTEM_ERROR,
-    UNKNOWN_PACKET,
-    PACKET_LENGTH_ERROR,
-    CH_NOT_INITED, // channel is not initialized
-    CH_OUTSIDE, // channel beyond available
-};
+typedef enum {INIT_CHANNEL_OK = 0, INIT_CHANNEL_ERROR_LENGTH = 1} init_channel_status_t;
+typedef enum {
+    CHANNEL_WRITE_OK = 0,
+    CHANNEL_OUTSIDE,
+    CHANNEL_NOT_INITED,
+    NOT_INITED_CHANNELS //
+} write_channel_status_t;
 
 struct States {
     bool led : 1;
@@ -48,40 +46,23 @@ struct Channel {
     bool is_need_update = false;
 };
 
-struct __attribute__((__packed__)) UpdateChannelPacket {
-    uint8_t channel;
-    uint8_t bright;
-};
-
 class Core {
 public:
     Core() = default;
 
-    DataProcessingStatus data_handler(const uint8_t *data, size_t len) {
-        uint8_t packed_id = data[0];
-        switch (packed_id) {
-            case 50:
-                if (sizeof(UpdateChannelPacket) != len -1) return PACKET_LENGTH_ERROR;
-                UpdateChannelPacket packet = *(UpdateChannelPacket*)&*(data+1);
-                return write_channel(packet.channel, packet.bright);
-                break;
-        }
-        return UNKNOWN_PACKET;
-    }
-
-    DataProcessingStatus write_channel(uint8_t channel, uint8_t val) {
-        if (channel > channels_length) return CH_OUTSIDE;
-        if (channels == nullptr) return SYSTEM_ERROR;
+    write_channel_status_t write_channel(uint8_t channel, uint8_t val, bool force = false) {
+        if (channel > channels_length) return CHANNEL_OUTSIDE;
+        if (channels == nullptr) return NOT_INITED_CHANNELS;
         Channel &ch = channels[channel];
-        if (ch.is_not_inited) return CH_NOT_INITED;
+        if (ch.is_not_inited) return CHANNEL_NOT_INITED;
         ch.bright = val;
-//        write_bright_CRT(ch);
-        ch.is_need_update = true;
-        return SUCCESS;
+        if (force) write_bright_CRT(ch);
+        else ch.is_need_update = true;
+        return CHANNEL_WRITE_OK;
     }
 
-    InitChannelsStatus init_channels(Channel *channels_ptr, uint8_t len) {
-        if (len < 1) return InitChannelsStatus::ERROR_LENGTH;
+    init_channel_status_t init_channels(Channel *channels_ptr, uint8_t len) {
+        if (len < 1) return init_channel_status_t::INIT_CHANNEL_ERROR_LENGTH;
         channels = channels_ptr;
         channels_length = len;
         for (int i = 0; i < len; ++i) {
@@ -90,7 +71,7 @@ public:
             channels[i].is_not_inited = false;
             write_bright_CRT(channels[i]);
         }
-        return InitChannelsStatus::INIT_OK;
+        return init_channel_status_t::INIT_CHANNEL_OK;
     }
 
     static void write_bright_CRT(Channel &channel) {
