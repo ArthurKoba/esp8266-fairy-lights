@@ -12,7 +12,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       <p>Который сделан на основе готового шаблона</p>
       <nav>
         <ul>
-          <li><a href="/">Эта страница</a></li>
+          <li><a href="/404.html">Эта страница</a></li>
         </ul>
       </nav>
     </header>
@@ -35,7 +35,6 @@ const char index_html[] PROGMEM = R"rawliteral(
       <section id="two">
         <h1>Light Two - Channels</h1>
         <div>
-        <div>
           <input type="range" class="channel" name="3" min="0" max="255" value="0" step="1" />
           <label for="cowbell">Red-Yellow</label>
         </div>
@@ -46,7 +45,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       </section>
     </main>
     <footer>
-      <p>Сюда бы я вписал информацию об авторе и ссылки на другие сайты</p>
+        <p>Сюда бы я вписал информацию об авторе и ссылки на другие сайты</p>
     </footer>
     <script src="/app.js" defer></script>
   </body>
