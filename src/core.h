@@ -19,6 +19,7 @@
 
 #include <Arduino.h>
 #include "core_types.h"
+#include "color_modes.h"
 #include "web_server_types.h"
 
 
@@ -52,15 +53,78 @@ public:
 
     init_sources_status_t init_led_source(LightSource *sources_ptr, uint8_t len) {
         if (len < 1) return init_sources_status_t::INIT_SOURCES_ERROR_LENGTH;
+        init_sources_status_t status = init_sources_status_t::INIT_SOURCES_OK;
         sources = sources_ptr;
-        return init_sources_status_t::INIT_SOURCES_OK;
+        sources_length = len;
+        for (int i = 0; i < len; ++i) {
+            if (change_color_mode_source(sources[i], sources->mode) == CHANGE_OK) continue;
+            status = INIT_SOURCES_OK_WITH_NODES;
+        }
+        return status;
     }
 
-    static void write_bright_CRT(Channel &channel) {
-        uint8_t val = channel.bright;
+    static change_color_mode_source_status_t change_color_mode_source(LightSource &source, ColorMode new_color_mode) {
+        if (source.mode == new_color_mode && source.color_mode_data != nullptr)
+            return change_color_mode_source_status_t::CHANGE_PASS;
+        delete[] source.color_mode_data;
+        switch (new_color_mode) {
+            case OFF_MODE:
+                source.mode = OFF_MODE;
+                break;
+            case COLOR_MODE:
+                source.mode = COLOR_MODE;
+                break;
+            case SMOOTH_MODE:
+                source.mode = SMOOTH_MODE;
+                source.color_mode_data = reinterpret_cast<uint8_t*>(new SmoothModeData{});
+                break;
+            case FADE_MODE:
+                source.mode = FADE_MODE;
+                source.color_mode_data = reinterpret_cast<uint8_t*>(new FadeModeData{});
+                break;
+        }
+        return change_color_mode_source_status_t::CHANGE_OK;
+    }
+
+    static void show_color_mode_source(LightSource &source) {
+        ChannelCount len = source.ch2 == nullptr ? ChannelCount::ONE : source.ch3 == nullptr ? ChannelCount::TWO : ChannelCount::THREE;
+        ChannelsBright bright;
+        bool need_update = false;
+        switch (source.mode) {
+            case OFF_MODE:
+            case COLOR_MODE:
+                switch (len) {
+                    case THREE: bright.ch3 = source.ch3->bright;
+                    case TWO  : bright.ch2 = source.ch2->bright;
+                    case ONE  : bright.ch1 = source.ch1->bright;
+                }
+                need_update = true;
+                break;
+            case SMOOTH_MODE:
+                need_update = ColorModes::calculate_smooth_color_mode(
+                        bright, *reinterpret_cast<SmoothModeData*>(source.color_mode_data)
+                );
+                break;
+            case FADE_MODE:
+
+                need_update = ColorModes::calculate_fade_color_mode(
+                        bright, *reinterpret_cast<FadeModeData*>(source.color_mode_data)
+                );
+                break;
+        }
+        if (!need_update) return;
+        switch (len) {
+            case THREE: write_bright_CRT(source.ch3->pin, bright.ch3);
+            case TWO  : write_bright_CRT(source.ch2->pin, bright.ch2);
+            case ONE  : write_bright_CRT(source.ch1->pin, bright.ch1);;
+        }
+    }
+
+    static void write_bright_CRT(Channel &channel) { write_bright_CRT(channel.pin, channel.bright); }
+
+    static void write_bright_CRT(uint8_t pin, uint8_t val) {
         val = ((long)val * val + 255) >> 8;
-        analogWrite(channel.pin, val);
-        channel.is_need_update = false;
+        analogWrite(pin, val);
     }
 
     void blink() {
@@ -78,13 +142,8 @@ public:
 
     void update() {
         if (millis() - last_update < UPDATE_DELAY) return;
+        for (int i = 0; i < sources_length; ++i) show_color_mode_source(sources[i]);
         last_update = millis();
-        for (int i = 0; i < channels_length; ++i) {
-            Channel &ch = channels[i];
-            if (!ch.is_need_update) continue;
-            Serial.println(ch.is_need_update);
-            write_bright_CRT(ch);
-        }
     }
 
     void write_channels_bright_to_buffer(uint8_t *buffer) {

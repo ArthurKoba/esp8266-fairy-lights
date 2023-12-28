@@ -10,17 +10,19 @@ const char pass[] = "";
 WebServer server;
 Core core;
 
-Channel channels[5] = {
-        {.pin = 5},
-        {.pin = 4},
+
+Channel channels[6] = {
         {.pin = 14},
         {.pin = 12},
         {.pin = 13},
+        {.pin = 5},
+        {.pin = 4},
+        {.pin = 0},
 };
 
 LightSource sources[2] = {
-        {&channels[0], &channels[1], nullptr},
-        {&channels[2], &channels[3], &channels[4]}
+        {&channels[0], &channels[1], &channels[2], FADE_MODE},
+        {&channels[3], &channels[4], &channels[5], SMOOTH_MODE},
 };
 
 void setup() {
