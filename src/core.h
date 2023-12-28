@@ -23,14 +23,11 @@ class Core {
 public:
     Core() = default;
 
-    write_channel_status_t write_channel(uint8_t channel, uint8_t val, bool force = false) {
+    write_channel_status_t write_channel(uint8_t channel, uint8_t val) {
         if (channel > channels_length) return CHANNEL_OUTSIDE;
         if (channels == nullptr) return NOT_INITED_CHANNELS;
-        Channel &ch = channels[channel];
-        if (ch.is_not_inited) return CHANNEL_NOT_INITED;
-        ch.bright = val;
-        if (force) write_bright_CRT(ch);
-        else ch.is_need_update = true;
+        if (channels[channel].is_not_inited) return CHANNEL_NOT_INITED;
+        channels[channel].bright = val;
         return CHANNEL_WRITE_OK;
     }
 
@@ -126,8 +123,8 @@ public:
     void blink() {
         if (millis() - last_blink < BLINK_DELAY_MS) return;
         last_blink = millis();
-        states.led ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
-        states.led = !states.led;
+        led_state ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
+        led_state = !led_state;
     }
 
     void update() {
@@ -149,7 +146,7 @@ private:
     Channel *channels = nullptr;
     uint8_t channels_length = 0;
     uint8_t sources_length = 0;
-    States states{};
+    bool led_state = false;
     uint32_t last_blink = 0;
     uint32_t last_update = 0;
 };

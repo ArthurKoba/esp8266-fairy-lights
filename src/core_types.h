@@ -33,22 +33,10 @@ enum ColorMode {
     SMOOTH_MODE,
 };
 
-struct States {
-    bool led : 1;
-    bool flag1 : 1;
-    bool flag2 : 1;
-    bool flag3 : 1;
-    bool flag4 : 1;
-    bool flag5 : 1;
-    bool flag6 : 1;
-    bool flag7 : 1;
-};
-
 struct Channel {
     int8_t pin = -1;
     uint8_t bright = 0;
     bool is_not_inited = true;
-    bool is_need_update = false;
 };
 
 struct LightSource {
