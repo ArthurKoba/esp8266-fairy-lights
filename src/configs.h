@@ -6,4 +6,6 @@
 
 #define USE_CORS
 
+#define UPDATE_CORE_DELAY 3
+
 #endif //ESP8266_FAIRY_LIGHTS_CONFIGS_H

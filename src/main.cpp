@@ -33,15 +33,15 @@ void setup() {
     core.init_led_source(sources, 2);
     pinMode(LED_PIN, OUTPUT);
 
-
     WiFi.begin(ssid, pass);
-    wl_status_t status = WL_DISCONNECTED;
+    wl_status_t status;
     do {
         core.blink();
         status = WiFi.status();
         delay(100);
     } while (status != WL_CONNECTED);
     digitalWrite(LED_PIN, true);
+
     server.init(&core);
 }
 

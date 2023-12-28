@@ -9,8 +9,8 @@
 #define BLINK_DELAY_MS 100
 #endif
 
-#ifndef UPDATE_DELAY
-#define UPDATE_DELAY 5
+#ifndef UPDATE_CORE_DELAY
+#define UPDATE_CORE_DELAY 5
 #endif
 
 #include <Arduino.h>
@@ -131,7 +131,7 @@ public:
     }
 
     void update() {
-        if (millis() - last_update < UPDATE_DELAY) return;
+        if (millis() - last_update < UPDATE_CORE_DELAY) return;
         for (int i = 0; i < sources_length; ++i) show_color_mode_source(sources[i]);
         last_update = millis();
     }
