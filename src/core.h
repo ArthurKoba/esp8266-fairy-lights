@@ -6,11 +6,7 @@
 #endif
 
 #ifndef BLINK_DELAY_MS
-#define BLINK_DELAY_MS 2000
-#endif
-
-#ifndef FAST_BLINK_DELAY_MS
-#define FAST_BLINK_DELAY_MS 2000
+#define BLINK_DELAY_MS 100
 #endif
 
 #ifndef UPDATE_DELAY
@@ -133,12 +129,6 @@ public:
         states.led ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
         states.led = !states.led;
     }
-    void fast_blink() {
-        if (millis() - last_fast_blink < FAST_BLINK_DELAY_MS) return;
-        last_fast_blink = millis();
-        states.led ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
-        states.led = !states.led;
-    }
 
     void update() {
         if (millis() - last_update < UPDATE_DELAY) return;
@@ -161,7 +151,6 @@ private:
     uint8_t sources_length = 0;
     States states{};
     uint32_t last_blink = 0;
-    uint32_t last_fast_blink = 0;
     uint32_t last_update = 0;
 };
 

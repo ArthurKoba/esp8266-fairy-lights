@@ -35,11 +35,14 @@ void setup() {
 
 
     WiFi.begin(ssid, pass);
+    wl_status_t status = WL_DISCONNECTED;
+    do {
+        core.blink();
+        status = WiFi.status();
+        delay(100);
+    } while (status != WL_CONNECTED);
+    digitalWrite(LED_PIN, true);
     server.init(&core);
 }
 
-void loop() {
-    if (WiFi.status() != WL_CONNECTED) core.fast_blink();
-    else core.blink();
-    core.update();
-}
+void loop() {core.update();}
