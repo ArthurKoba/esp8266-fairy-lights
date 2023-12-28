@@ -20,9 +20,10 @@ Channel channels[6] = {
         {.pin = 0},
 };
 
-LightSource sources[2] = {
+LightSource sources[3] = {
         {&channels[0], &channels[1], &channels[2], FADE_MODE},
-        {&channels[3], &channels[4], &channels[5], SMOOTH_MODE},
+        {&channels[3], &channels[4], nullptr, FADE_MODE},
+        {&channels[5], &channels[6], &channels[7], SMOOTH_MODE},
 };
 
 void setup() {
