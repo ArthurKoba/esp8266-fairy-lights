@@ -34,6 +34,8 @@ void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
 
+    analogWriteResolution(10);
+
     core.init_channels(channels, 5);
     core.init_led_source(sources, 3);
     pinMode(LED_PIN, OUTPUT);

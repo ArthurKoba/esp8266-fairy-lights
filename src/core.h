@@ -116,8 +116,9 @@ public:
     static void write_bright_CRT(Channel &channel) { write_bright_CRT(channel.pin, channel.bright); }
 
     static void write_bright_CRT(uint8_t pin, uint8_t val) {
-        val = ((long)val * val + 255) >> 8;
-        analogWrite(pin, val);
+//        uint8_t bright = ((long)val * val + 255) >> 8;
+        uint16_t bright = pgm_read_word(&(crt_gamma_pgm_10_bit[val]));
+        analogWrite(pin, bright);
     }
 
     void blink() {
