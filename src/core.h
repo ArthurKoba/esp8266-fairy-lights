@@ -13,10 +13,9 @@
 #define UPDATE_CORE_DELAY 5
 #endif
 
-#include <Arduino.h>
 #include "core_types.h"
 #include "color_modes.h"
-#include "web_server_types.h"
+//#include "web_server_types.h"
 
 
 class Core {

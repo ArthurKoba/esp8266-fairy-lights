@@ -1,8 +1,8 @@
 #ifndef ESP8266_FAIRY_LIGHTS_WEB_SERVER_TYPES_H
 #define ESP8266_FAIRY_LIGHTS_WEB_SERVER_TYPES_H
 
-#include <Arduino.h>
 #include <ESPAsyncWebServer.h>
+#include <cstdint>
 
 typedef enum {
     SUCCESS = 0,

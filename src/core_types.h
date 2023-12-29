@@ -1,7 +1,8 @@
 #ifndef ESP8266_FAIRY_LIGHTS_CORE_TYPES_H
 #define ESP8266_FAIRY_LIGHTS_CORE_TYPES_H
 
-#include <Arduino.h>
+#include <cstdint>
+#include "pgmspace.h"
 
 typedef enum {
     INIT_CHANNEL_OK = 0,
@@ -44,7 +45,7 @@ struct LightSource {
     Channel *ch2 = nullptr;
     Channel *ch3 = nullptr;
     ColorMode mode = OFF_MODE;
-    uint8 *color_mode_data = nullptr;
+    uint8_t *color_mode_data = nullptr;
 };
 
 const uint16_t crt_gamma_pgm_10_bit[256] PROGMEM  = {
@@ -65,4 +66,5 @@ const uint16_t crt_gamma_pgm_10_bit[256] PROGMEM  = {
         744,752,760,769,777,785,794,802,811,820,828,837,846,855,863,872,
         881,890,900,909,918,927,937,946,955,965,975,984,994,1004,1013,1023
 };
+
 #endif //ESP8266_FAIRY_LIGHTS_CORE_TYPES_H
