@@ -11,19 +11,23 @@ WebServer server;
 Core core;
 
 
-Channel channels[6] = {
-        {.pin = 14},
-        {.pin = 12},
-        {.pin = 13},
+Channel channels[9] = {
         {.pin = 5},
         {.pin = 4},
         {.pin = 0},
+
+        {.pin = 2},
+        {.pin = 14},
+
+        {.pin = 12},
+        {.pin = 13},
+        {.pin = 15},
 };
 
 LightSource sources[3] = {
-        {&channels[0], &channels[1], &channels[2], FADE_MODE},
-        {&channels[3], &channels[4], nullptr, FADE_MODE},
-        {&channels[5], &channels[6], &channels[7], SMOOTH_MODE},
+        {&channels[0], &channels[1], &channels[2], SMOOTH_MODE},
+        {&channels[3], &channels[4], nullptr, OFF_MODE},
+        {&channels[5], &channels[6], &channels[7], FADE_MODE},
 };
 
 void setup() {
@@ -31,7 +35,7 @@ void setup() {
     Serial.println(PSTR("\nStart system."));
 
     core.init_channels(channels, 5);
-    core.init_led_source(sources, 2);
+    core.init_led_source(sources, 3);
     pinMode(LED_PIN, OUTPUT);
 
     WiFi.begin(ssid, pass);

@@ -50,7 +50,7 @@ public:
         sources = sources_ptr;
         sources_length = len;
         for (int i = 0; i < len; ++i) {
-            if (change_color_mode_source(sources[i], sources->mode) == CHANGE_OK) continue;
+            if (change_color_mode_source(sources[i], sources[i].mode) == CHANGE_OK) continue;
             status = INIT_SOURCES_OK_WITH_NODES;
         }
         return status;
