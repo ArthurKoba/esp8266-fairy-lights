@@ -124,8 +124,7 @@ public:
     void blink() {
         if (millis() - last_blink < BLINK_DELAY_MS) return;
         last_blink = millis();
-        led_state ? digitalWrite(LED_PIN, HIGH) : digitalWrite(LED_PIN, LOW);
-        led_state = !led_state;
+        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
     }
 
     void update() {
@@ -147,7 +146,6 @@ private:
     Channel *channels = nullptr;
     uint8_t channels_length = 0;
     uint8_t sources_length = 0;
-    bool led_state = false;
     uint32_t last_blink = 0;
     uint32_t last_update = 0;
 };
