@@ -22,7 +22,11 @@ typedef enum {
 } change_color_mode_source_status_t;
 
 struct Channel {
-    const uint8_t pin = 255;
+    explicit Channel(uint8_t pin_) {
+        pin = pin_;
+    }
+
+    uint8_t pin = 255;
     uint8_t bright = 0;
 };
 

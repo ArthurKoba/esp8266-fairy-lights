@@ -1,13 +1,11 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
 
 #include "configs.h"
+#include "wireless.h"
 #include "core.h"
 #include "web_server.h"
 #include "light_source.h"
 
-const char ssid[]  = "";
-const char pass[] = "";
 WebServer server;
 Core core;
 
@@ -20,39 +18,29 @@ void setup() {
     Serial.println(PSTR("\nStart system."));
     pinMode(LED_PIN, OUTPUT);
     analogWriteResolution(10);
-
-    source_one.add_channel(4);
-    source_one.add_channel(0);
-
-    source_two.add_channel(2);
-    source_two.add_channel(14);
-    source_two.change_color_mode_source(ColorMode::SMOOTH_MODE);
-
-    source_three.add_channel(12);
-    source_three.add_channel(13);
-    source_three.add_channel(15);
-
+    source_one.add_channel(SOURCE1_CH1_PIN);
+    source_one.add_channel(SOURCE1_CH2_PIN);
+    source_one.add_channel(SOURCE1_CH3_PIN);
+    source_two.add_channel(SOURCE2_CH1_PIN);
+    source_two.add_channel(SOURCE2_CH2_PIN);
+    source_two.change_color_mode_source(ColorMode::FADE_MODE);
+    source_three.add_channel(SOURCE3_CH1_PIN);
+    source_three.add_channel(SOURCE3_CH2_PIN);
+    source_three.add_channel(SOURCE3_CH3_PIN);
     Serial.println(PSTR("Channels inited."));
+
     core.add_light_source(source_one);
     core.add_light_source(source_two);
     core.add_light_source(source_three);
     Serial.println(PSTR("Sources inited. Connect Wi-Fi..."));
-    WiFi.begin(ssid, pass);
-    wl_status_t status;
-    do {
-        core.blink();
-        status = WiFi.status();
-        delay(100);
-    } while (status != WL_CONNECTED);
 
-    Serial.print(PSTR("Wi-Fi connected! IP: "));
-    Serial.println(WiFi.localIP());
-    digitalWrite(LED_PIN, false);
-
+    connect_wifi([] () {core.blink();});
     server.init(&core);
     Serial.println(PSTR("Server successful inited! Start modes."));
 }
 
 void loop() {
-    core.show_modes();
+    while(true) {
+        core.show_modes();
+    };
 }

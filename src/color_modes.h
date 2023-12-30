@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <cstdlib>
-#include "core_esp8266_i2s.h"
 #include "Arduino.h"
 
 
@@ -28,7 +27,14 @@ struct SmoothModeData {
     uint32_t last_show = 0;
 };
 
-struct ChannelsBright {uint8_t ch1 = 0; uint8_t ch2 = 0; uint8_t ch3 = 0;};
+struct ChannelsBright {
+    ChannelsBright(uint8_t bright_ch1, uint8_t bright_ch2, uint8_t bright_ch3) {
+        ch1 = bright_ch1;
+        ch2 = bright_ch2;
+        ch3 = bright_ch3;
+    }
+
+    uint8_t ch1 = 0; uint8_t ch2 = 0; uint8_t ch3 = 0;};
 
 
 class ColorModes {

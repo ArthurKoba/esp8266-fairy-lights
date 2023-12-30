@@ -1,8 +1,33 @@
 #ifndef ESP8266_FAIRY_LIGHTS_CONFIGS_H
 #define ESP8266_FAIRY_LIGHTS_CONFIGS_H
 
+#define WIFI_SSID ""
+#define WIFI_PASS ""
+
 #define SERIAL_BAUDRATE 500000
+
+#if defined(ESP8266)
 #define LED_PIN LED_BUILTIN
+#define SOURCE1_CH1_PIN 5
+#define SOURCE1_CH2_PIN 4
+#define SOURCE1_CH3_PIN 0
+#define SOURCE2_CH1_PIN 2
+#define SOURCE2_CH2_PIN 14
+#define SOURCE3_CH1_PIN 12
+#define SOURCE3_CH2_PIN 13
+#define SOURCE3_CH3_PIN 15
+#elif defined(ESP32)
+#define LED_PIN 2
+#define SOURCE1_CH1_PIN 2
+#define SOURCE1_CH2_PIN 4
+#define SOURCE1_CH3_PIN 16
+#define SOURCE2_CH1_PIN 17
+#define SOURCE2_CH2_PIN 5
+#define SOURCE3_CH1_PIN 18
+#define SOURCE3_CH2_PIN 19
+#define SOURCE3_CH3_PIN 21
+#endif
+
 
 #define USE_CORS
 

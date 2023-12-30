@@ -1,8 +1,6 @@
 #ifndef ESP8266_FAIRY_LIGHTS_LIGHT_SOURCE_H
 #define ESP8266_FAIRY_LIGHTS_LIGHT_SOURCE_H
 
-//#include <Arduino.h>
-
 #include "color_modes.h"
 #include "light_source_types.h"
 
@@ -19,9 +17,9 @@ public:
 
     add_channel_status_t add_channel(uint8_t pin) {
         if (count_channels >= 3) return add_channel_status_t::INIT_CHANNEL_FAIL_MAX_CHANNELS;
-        if (!ch1) ch1 = new Channel{.pin = pin};
-        else if (!ch2) ch2 = new Channel{.pin = pin};
-        else if (!ch3) ch3 = new Channel{.pin = pin};
+        if (!ch1) ch1 = new Channel(pin);
+        else if (!ch2) ch2 = new Channel(pin);
+        else if (!ch3) ch3 = new Channel(pin);
         count_channels++;
         pinMode(pin, OUTPUT);
         return add_channel_status_t::INIT_CHANNEL_OK;

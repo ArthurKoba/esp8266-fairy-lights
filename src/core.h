@@ -69,6 +69,7 @@ public:
     void show_modes() {
         if (millis() - last_update < UPDATE_CORE_DELAY) return;
         SourceItem *p = first;
+        if (!p) return;
         while (p) {
             p->source.show_mode();
             p = p->next;

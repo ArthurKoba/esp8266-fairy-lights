@@ -1,7 +1,6 @@
 #ifndef ESP8266_FAIRY_LIGHTS_WEB_SERVER_H
 #define ESP8266_FAIRY_LIGHTS_WEB_SERVER_H
 
-#include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
 #include "web_server_types.h"
