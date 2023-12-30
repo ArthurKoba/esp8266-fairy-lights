@@ -30,11 +30,9 @@ struct SmoothModeData {
 
 struct ChannelsBright {uint8_t ch1 = 0; uint8_t ch2 = 0; uint8_t ch3 = 0;};
 
-enum ChannelCount {ONE = 1, TWO = 2, THREE = 3};
 
 class ColorModes {
 public:
-
     static bool calculate_fade_color_mode(ChannelsBright &channels, FadeModeData &data) {
         if (millis() - data.last_show < data.delay_ms) return false;
         uint8_t bright = abs(data.index++);
