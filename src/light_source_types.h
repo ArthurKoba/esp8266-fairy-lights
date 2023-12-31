@@ -21,13 +21,15 @@ typedef enum {
     CHANGE_PASS = 1
 } change_color_mode_source_status_t;
 
-struct Channel {
-    explicit Channel(uint8_t pin_) {
+class Channel {
+public:
+    explicit Channel(uint8_t pin_, String name_) {
         pin = pin_;
+        name = std::move(name_);
     }
-
-    uint8_t pin = 255;
-    uint8_t bright = 0;
+uint8_t bright = 0;
+String name;
+uint8_t pin = 255;
 };
 
 const uint16_t crt_gamma_pgm_10_bit[256] PROGMEM  = {
