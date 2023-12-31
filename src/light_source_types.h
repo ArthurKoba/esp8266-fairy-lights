@@ -23,9 +23,10 @@ typedef enum {
 
 class Channel {
 public:
-    explicit Channel(uint8_t pin_, String name_) {
+    explicit Channel(uint8_t pin_, String name_, uint8_t bright_ = 0) {
         pin = pin_;
         name = std::move(name_);
+        bright = bright_;
     }
 uint8_t bright = 0;
 String name;

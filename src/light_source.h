@@ -15,12 +15,12 @@ public:
         delete ch1; delete ch2; delete ch3;
     }
 
-    add_channel_status_t add_channel(uint8_t pin, String name_) {
+    add_channel_status_t add_channel(uint8_t pin, String name_, uint8_t bright = 0) {
         if (count_channels >= 3) return add_channel_status_t::INIT_CHANNEL_FAIL_MAX_CHANNELS;
         count_chars_info_all_channels += name_.length();
-        if (!ch1) ch1 = new Channel(pin, std::move(name_));
-        else if (!ch2) ch2 = new Channel(pin, std::move(name_));
-        else if (!ch3) ch3 = new Channel(pin, std::move(name_));
+        if (!ch1) ch1 = new Channel(pin, std::move(name_), bright);
+        else if (!ch2) ch2 = new Channel(pin, std::move(name_), bright);
+        else if (!ch3) ch3 = new Channel(pin, std::move(name_), bright);
         count_channels++;
         pinMode(pin, OUTPUT);
         return add_channel_status_t::INIT_CHANNEL_OK;
