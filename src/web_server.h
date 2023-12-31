@@ -17,10 +17,14 @@ public:
 #warning "CORS ENABLED!"
 #endif
         c = core;
+        srv.on("/changeBright", HTTP_POST, [] (Req *r) {},nullptr,
+        [this] (Req *r, const uint8_t *d, size_t l, size_t i, size_t t) {change_bright(r, d, l);
+        });
         srv.on("/changeMode", HTTP_POST, [] (Req *r) {},nullptr,
        [this] (Req *r, const uint8_t *d, size_t l, size_t i, size_t t) {change_mode(r, d, l);
         });
-        srv.on("/getSources", HTTP_GET, [this] (Req *r) { get_sources(r);});
+        srv.on("/getSourcesInfo", HTTP_GET, [this] (Req *r) {get_sources_info(r);});
+
         srv.on("/", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::INDEX);});
         srv.on("/styles.css", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::STYLES);});
         srv.on("/app.js", HTTP_GET, [this] (Req *r) {page_handler(r, web_server_file_t::APP_JS);});
@@ -44,12 +48,25 @@ protected:
         }
     }
 
-    void get_sources(Req *r) {
-        size_t buffer_size = c->get_size_buffer_all_sources();
-        auto *data = new uint8_t[buffer_size];
-        c->write_sources_info_to_buffer(data);
-        r->send_P(200, OCTET_TYPE, data, buffer_size);
-        delete[] data;
+    void get_sources_info(Req *r) {
+        auto *buffer = new uint8_t[c->get_source_info_buffer_length()];
+        size_t buffer_size = c->get_sources_info(buffer);
+        if (!buffer_size) return r->send(500, PLAIN_TYPE, PSTR("NO SOURCES"));;
+        r->send_P(200, OCTET_TYPE, buffer, buffer_size);
+        delete[] buffer;
+    }
+
+    void change_bright(Req *r, const uint8_t *data, size_t len) {
+        if (len != 3) return r->send_P(500, PLAIN_TYPE, PSTR("Length not equals 3 byte"));
+        change_bright_status_t status = c->change_bright(data[0], data[1], data[2]);
+        switch (status) {
+            case CHANGE_BRIGHT_OK:
+                return r->send_P(200, PLAIN_TYPE, PSTR("OK"));
+            case CHANGE_BRIGHT_FAIL_OUTSIDE_SOURCE:
+                return r->send_P(500, PLAIN_TYPE, PSTR("Source outsize"));
+            case CHANGE_BRIGHT_FAIL_OUTSIDE_CHANNEL:
+                return r->send_P(500, PLAIN_TYPE, PSTR("Channel outsize"));
+        }
     }
 
     static void page_handler(Req *r, web_server_file_t file) {
