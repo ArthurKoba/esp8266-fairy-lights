@@ -9,29 +9,31 @@
 WebServer server;
 Core core;
 
-Source source_one = Source("Fairy Light One");
-Source source_two = Source("Fairy Light Two");
-Source source_three = Source("Led Strip");
+Source light_one = Source("Fairy Light One");
+Source light_two = Source("Fairy Light Two");
+Source led_strip = Source("Led Strip");
 
-[[noreturn]] void setup() {
+void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
     pinMode(LED_PIN, OUTPUT);
     analogWriteResolution(10);
-    source_one.add_channel(SOURCE1_CH1_PIN);
-    source_one.add_channel(SOURCE1_CH2_PIN);
-    source_one.add_channel(SOURCE1_CH3_PIN);
-    source_two.add_channel(SOURCE2_CH1_PIN);
-    source_two.add_channel(SOURCE2_CH2_PIN);
-    source_two.change_color_mode_source(ColorMode::FADE_MODE);
-    source_three.add_channel(SOURCE3_CH1_PIN);
-    source_three.add_channel(SOURCE3_CH2_PIN);
-    source_three.add_channel(SOURCE3_CH3_PIN);
+    light_one.add_channel(SOURCE1_CH1_PIN, "Red", 255);
+    light_one.add_channel(SOURCE1_CH2_PIN, "Blue and Green", 255);
+    light_one.add_channel(SOURCE1_CH3_PIN, "Yellow", 255);
+    light_one.set_mode(ColorMode::SMOOTH_MODE);
+    light_two.add_channel(SOURCE2_CH1_PIN, "Red and Yellow", 255);
+    light_two.add_channel(SOURCE2_CH2_PIN, "Blue and Green", 255);
+    light_two.set_mode(ColorMode::SMOOTH_MODE);
+    led_strip.add_channel(SOURCE3_CH1_PIN, "Red", 200);
+    led_strip.add_channel(SOURCE3_CH2_PIN, "Green");
+    led_strip.add_channel(SOURCE3_CH3_PIN, "Blue", 200);
+    led_strip.set_mode(ColorMode::COLOR_MODE);
     Serial.println(PSTR("Channels inited."));
 
-    core.add_light_source(source_one);
-    core.add_light_source(source_two);
-    core.add_light_source(source_three);
+    core.add_light_source(light_one);
+    core.add_light_source(light_two);
+    core.add_light_source(led_strip);
     Serial.println(PSTR("Sources inited. Connect Wi-Fi..."));
 
     connect_wifi([] () {core.blink();});
@@ -39,6 +41,7 @@ Source source_three = Source("Led Strip");
     Serial.println(PSTR("Server successful inited! Start modes."));
     while(true) {
         core.show_modes();
+        delay(1);
     };
 }
 
