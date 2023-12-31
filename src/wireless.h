@@ -8,16 +8,12 @@
 #endif
 
 void connect_wifi(void (*blink)()) {
-#if defined(ESP8266)
-    wl_status_t status = WiFi.status();
-#elif defined(ESP32)
+#if defined(ESP32)
     WiFiClass::mode(WIFI_STA);
-    wl_status_t status = WiFiClass::status();
 #endif
-    WiFi.begin(WIFI_SSID, WIFI_PASS);
+    wl_status_t status = WiFi.begin(WIFI_SSID, WIFI_PASS);
     wl_status_t new_status;
     do {
-        blink();
 #if defined(ESP8266)
         new_status = WiFi.status();
 #elif defined(ESP32)
@@ -26,6 +22,7 @@ void connect_wifi(void (*blink)()) {
         if (status != new_status) {
             Serial.printf("Status wi-fi %u\n", status);
         }
+        blink();
         status = new_status;
         delay(100);
     } while (status != WL_CONNECTED);

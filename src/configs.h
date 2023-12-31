@@ -18,14 +18,14 @@
 #define SOURCE3_CH3_PIN 15
 #elif defined(ESP32)
 #define LED_PIN 2
-#define SOURCE1_CH1_PIN 2
-#define SOURCE1_CH2_PIN 4
-#define SOURCE1_CH3_PIN 16
-#define SOURCE2_CH1_PIN 17
-#define SOURCE2_CH2_PIN 5
-#define SOURCE3_CH1_PIN 18
-#define SOURCE3_CH2_PIN 19
-#define SOURCE3_CH3_PIN 21
+#define SOURCE1_CH1_PIN 21
+#define SOURCE1_CH2_PIN 19
+#define SOURCE1_CH3_PIN 18
+#define SOURCE2_CH1_PIN 23
+#define SOURCE2_CH2_PIN 22
+#define SOURCE3_CH1_PIN 5
+#define SOURCE3_CH2_PIN 17
+#define SOURCE3_CH3_PIN 16
 #endif
 
 

@@ -13,7 +13,7 @@ Source source_one = Source("Fairy Light One");
 Source source_two = Source("Fairy Light Two");
 Source source_three = Source("Led Strip");
 
-void setup() {
+[[noreturn]] void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
     pinMode(LED_PIN, OUTPUT);
@@ -37,10 +37,9 @@ void setup() {
     connect_wifi([] () {core.blink();});
     server.init(&core);
     Serial.println(PSTR("Server successful inited! Start modes."));
-}
-
-void loop() {
     while(true) {
         core.show_modes();
     };
 }
+
+void loop() {}
