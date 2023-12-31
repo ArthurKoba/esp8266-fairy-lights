@@ -3,13 +3,13 @@ const char index_html[] PROGMEM = R"rawliteral(
 <html lang="ru">
   <head>
     <meta charset="utf-8">
-    <title>Fairy Lights | ESP8266</title>
+    <title>Fairy Lights | Controller</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <div class="wrapper">
         <header>
-            <h1>ESP8266 Fairy Light Controller</h1>
+            <h1>ESP Fairy Light Controller</h1>
             <p>The site is intended for managing light output sources.</p>
         </header>
         <main>
@@ -22,7 +22,6 @@ const char index_html[] PROGMEM = R"rawliteral(
     <script src="/app.js" defer></script>
   </body>
 </html>
-
 )rawliteral";
 
 const char not_found_html[] PROGMEM = R"rawliteral(

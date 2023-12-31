@@ -1,5 +1,4 @@
 const char styles_css[] PROGMEM = R"rawliteral(
-
 :root {
     --main-color: #000;
     --primary-color: #aaf;
@@ -35,6 +34,20 @@ body {
 .wrapper {
     height: 95vh;
 }
+
+.d-none {
+    display: none;
+}
+
+.bright {
+    width: 100%;
+}
+
+.bright input {
+    width: 100%;
+    margin-bottom: .5rem;
+}
+
 main, header, footer {
     padding: 0.5rem;
 }
@@ -49,8 +62,12 @@ footer a {
     color: #2933bb;
 }
 
+main>section>h3,select {
+    margin-top: .5rem;
+}
+
 main>section {
-    padding: .5rem;
+    padding: 0 .5rem;
     margin-top: .5rem;
     margin-right: 0;
     margin-left: 0;
@@ -62,6 +79,7 @@ main>section {
 main>section>select {
     width: 100%;
     padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+    margin-bottom: .5rem;
     border: 1px solid var(--border-color);
     font-size: 1rem;
     border-radius: 0.25rem;
@@ -84,5 +102,4 @@ option {
 option:checked {
     background-color: var(--primary-color);
 }
-
 )rawliteral";
