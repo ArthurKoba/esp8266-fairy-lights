@@ -44,10 +44,15 @@ public:
 
 class Core {
 public:
-    Core() : first(nullptr), last(nullptr) {};
+    explicit Core(uint8_t led_pin_ = 255) : first(nullptr), last(nullptr) {
+        led_pin = led_pin_;
+        pinMode(led_pin, OUTPUT);
+        analogWriteResolution(10);
+    };
+
     ~Core() {
         SourceItem *p = first;
-        SourceItem *deleted = nullptr;
+        SourceItem *deleted;
         while (p) {
             deleted = p;
             p = p->next;
@@ -88,9 +93,9 @@ public:
     }
 
     void blink() {
-        if (millis() - last_blink < BLINK_DELAY_MS) return;
+        if (millis() - last_blink < BLINK_DELAY_MS || led_pin == 255) return;
         last_blink = millis();
-        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+        digitalWrite(led_pin, !digitalRead(led_pin));
     }
 
     size_t get_source_info_buffer_length() const {
@@ -160,6 +165,7 @@ private:
     uint16_t count_chars_info_all_sources = 0;
     uint8_t count_all_channels = 0;
     uint8_t count_sources = 0;
+    uint8_t led_pin = 255;
 };
 
 #endif //ESP8266_FAIRY_LIGHTS_CORE_H

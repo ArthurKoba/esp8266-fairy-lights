@@ -7,7 +7,7 @@
 #include "light_source.h"
 
 WebServer server;
-Core core;
+Core core = Core(LED_PIN);
 
 Source light_one = Source("Fairy Light One");
 Source light_two = Source("Fairy Light Two");
@@ -16,8 +16,7 @@ Source led_strip = Source("Led Strip");
 void setup() {
     Serial.begin(SERIAL_BAUDRATE);
     Serial.println(PSTR("\nStart system."));
-    pinMode(LED_PIN, OUTPUT);
-    analogWriteResolution(10);
+
     light_one.add_channel(SOURCE1_CH1_PIN, "Red", 255);
     light_one.add_channel(SOURCE1_CH2_PIN, "Blue and Green", 255);
     light_one.add_channel(SOURCE1_CH3_PIN, "Yellow", 255);
