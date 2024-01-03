@@ -39,10 +39,8 @@ void setup() {
     connect_wifi([] () {core.blink();});
     server.init(&core);
     Serial.println(PSTR("Server successful inited! Start modes."));
-    while(true) {
-        core.show_modes();
-        delay(1);
-    };
 }
 
-void loop() {}
+void loop() {
+    core.show_modes();
+}

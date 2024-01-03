@@ -4,7 +4,7 @@
 #define WIFI_SSID ""
 #define WIFI_PASS ""
 
-#define SERIAL_BAUDRATE 500000
+#define SERIAL_BAUDRATE 115200
 
 #if defined(ESP8266)
 #define LED_PIN LED_BUILTIN

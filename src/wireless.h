@@ -7,6 +7,9 @@
 #include <WiFi.h>
 #endif
 
+#include "configs.h"
+
+
 void connect_wifi(void (*blink)()) {
 #if defined(ESP32)
     WiFiClass::mode(WIFI_STA);
