@@ -41,6 +41,8 @@ void setup() {
     Serial.println(PSTR("Sources inited. Connect Wi-Fi..."));
 
     connect_wifi([] () {core.blink();});
+    Serial.print(PSTR("Wi-Fi connected! IP: "));
+    Serial.println(WiFi.localIP());
     server.init(&core);
     Serial.println(PSTR("Server successful inited! Start modes."));
 }

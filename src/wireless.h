@@ -29,8 +29,6 @@ void connect_wifi(void (*blink)()) {
         status = new_status;
         delay(100);
     } while (status != WL_CONNECTED);
-    Serial.print(PSTR("Wi-Fi connected! IP: "));
-    Serial.println(WiFi.localIP());
     digitalWrite(LED_PIN, false);
 }
 
