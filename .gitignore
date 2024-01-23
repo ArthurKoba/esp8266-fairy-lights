@@ -3,3 +3,4 @@
 CMakeListsPrivate.txt
 cmake-build-*/
 README
+docs/fairy-lights-schemas/fairy-lights-schemas-backups
