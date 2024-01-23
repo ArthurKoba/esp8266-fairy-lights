@@ -30,7 +30,7 @@
 #endif
 
 
-#define USE_CORS
+//#define USE_CORS
 
 #define UPDATE_CORE_DELAY 3
 
