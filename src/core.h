@@ -112,7 +112,7 @@ public:
             Source *source = &p->source;
             buffer[size++] = source->get_mode(); // set source mode
             buffer[size++] = source->get_name().length(); // set source mode
-            for (int i = 0; i < source->get_name().length(); ++i) { // write source name
+            for (unsigned int i = 0; i < source->get_name().length(); ++i) { // write source name
                 buffer[size++] = source->get_name().c_str()[i];
             }
             buffer[size++] = source->get_count_channels(); // set count channels in source
@@ -120,7 +120,7 @@ public:
                 Channel *ch = source->get_channel(i);
                 buffer[size++] = ch->bright; // set bright
                 buffer[size++] = ch->name.length(); // set count chars in name channel
-                for (int j = 0; j < ch->name.length(); ++j) {
+                for (unsigned int j = 0; j < ch->name.length(); ++j) {
                     buffer[size++] = ch->name.c_str()[j]; // write name
                 }
             }
