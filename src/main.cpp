@@ -23,10 +23,11 @@ void setup() {
 
     light_two.add_channel(SOURCE2_CH1_PIN, "Red and Yellow", 255);
     light_two.add_channel(SOURCE2_CH2_PIN, "Blue and Green", 255);
+//    light_two.add_channel(SOURCE2_CH3_PIN, "UNKNOWN", 255);
 
-    led_strip.add_channel(SOURCE3_CH1_PIN, "Red", 200);
-    led_strip.add_channel(SOURCE3_CH2_PIN, "Green");
-    led_strip.add_channel(SOURCE3_CH3_PIN, "Blue", 200);
+    led_strip.add_channel(STRIP_RED_PIN, "Red", 200);
+    led_strip.add_channel(STRIP_GREEN_PIN, "Green");
+    led_strip.add_channel(STRIP_BLUE_PIN, "Blue", 200);
 
     light_one.set_mode(ColorMode::SMOOTH_MODE);
     light_two.set_mode(ColorMode::FADE_MODE);
